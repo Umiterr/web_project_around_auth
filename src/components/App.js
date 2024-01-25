@@ -1,13 +1,62 @@
 import React, { useEffect, useState } from "react";
+import {
+  Route,
+  Routes,
+  BrowserRouter as Router,
+  Navigate,
+  /* useNavigate, */
+} from "react-router-dom";
+
 import "../App.css";
 import CurrentUserContext from "../contexts/CurrentUserContext";
 import api from "../utils/api";
 import { Footer } from "./Footer";
 import { Header } from "./Header";
 import { Main } from "./Main";
+import Login from "./Login";
+import Register from "./Register";
+import * as auth from "../utils/auth";
+import ProtectedRoute from "./ProtectedRoute";
 
 export function App() {
+  const [loggedIn, setLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [user, setUser] = useState(null);
+  const [cards, setCards] = useState([]);
+  const [isImagePopupOpen, setIsImagePopupOpen] = useState(false);
+  const [isPopupConfirmOpen, setIsPopupConfirmOpen] = useState(false);
+  const [selectedCard, setSelectedCard] = useState(null);
+  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
+  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
+  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
+
+  /*  const navigate = useNavigate(); */
+
+  const fetchUserData = async () => {
+    try {
+      const userInfo = await api.getUserInfo();
+      setCurrentUser(userInfo);
+      setLoggedIn(true);
+    } catch (error) {
+      console.error("Error fetching current user data:", error);
+      setLoggedIn(false);
+    }
+  };
+
+  /* const tokenCheck = () => {
+    const jwt = localStorage.getItem("jwt");
+
+    if (jwt) {
+      auth.getContent(jwt).then((res) => {
+        if (res) {
+          console.log(res);
+          setLoggedIn(true);
+          navigate("/profile");
+        }
+      });
+    }
+  }; */
+
   useEffect(() => {
     try {
       api.getUserInfo().then((userInfo) => {
@@ -21,17 +70,6 @@ export function App() {
       console.error("Error fetching current user data:", error);
     }
   }, []);
-
-  const [user, setUser] = useState(null); // name, about, avatar
-  const [cards, setCards] = useState([]);
-  const [isImagePopupOpen, setIsImagePopupOpen] = useState(false);
-  const [isPopupConfirmOpen, setIsPopupConfirmOpen] = useState(false);
-  const [selectedCard, setSelectedCard] = useState(null);
-
-  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
-  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
-
-  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
 
   const closeImagePopup = () => {
     setIsImagePopupOpen(false);
@@ -74,39 +112,67 @@ export function App() {
     setIsEditAvatarPopupOpen(false);
   };
 
-  return (
-    <div className="page__content">
-      <Header />
-      <CurrentUserContext.Provider value={currentUser}>
-        <Main
-          user={user}
-          cards={cards}
-          isImagePopupOpen={isImagePopupOpen}
-          isPopupConfirmOpen={isPopupConfirmOpen}
-          selectedCard={selectedCard}
-          isAddPlacePopupOpen={isAddPlacePopupOpen}
-          isEditProfilePopupOpen={isEditProfilePopupOpen}
-          isEditAvatarPopupOpen={isEditAvatarPopupOpen}
-          closeImagePopup={closeImagePopup}
-          closePopupConfirm={closePopupConfirm}
-          onAddCard={onAddCard}
-          onEditAvatarClick={onEditAvatarClick}
-          onEditProfileClick={onEditProfileClick}
-          deleteSelectedCard={deleteSelectedCard}
-          handleUpdateUser={handleUpdateUser}
-          handleUpdateAvatar={handleUpdateAvatar}
-          setUser={setUser}
-          setCards={setCards}
-          setSelectedCard={setSelectedCard}
-          setIsImagePopupOpen={setIsImagePopupOpen}
-          setIsPopupConfirmOpen={setIsPopupConfirmOpen}
-          setIsAddPlacePopupOpen={setIsAddPlacePopupOpen}
-          setIsEditProfilePopupOpen={setIsEditProfilePopupOpen}
-          setIsEditAvatarPopupOpen={setIsEditAvatarPopupOpen}
-        />
-      </CurrentUserContext.Provider>
+  /* tokenCheck(); */
 
-      <Footer />
-    </div>
+  return (
+    <CurrentUserContext.Provider value={currentUser}>
+      <Router>
+        <div className="page__content">
+          <Header />
+
+          <Routes>
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login onLogin={fetchUserData} />} />
+            <Route>
+              path="/" element=
+              {loggedIn ? (
+                <Navigate to="/profile" replace />
+              ) : (
+                <Navigate to="/login" replace />
+              )}
+            </Route>
+
+            <Route>
+              path="/profile" element=
+              {
+                <ProtectedRoute
+                  loggedIn={loggedIn}
+                  children={
+                    <Main
+                      user={user}
+                      cards={cards}
+                      isImagePopupOpen={isImagePopupOpen}
+                      isPopupConfirmOpen={isPopupConfirmOpen}
+                      selectedCard={selectedCard}
+                      isAddPlacePopupOpen={isAddPlacePopupOpen}
+                      isEditProfilePopupOpen={isEditProfilePopupOpen}
+                      isEditAvatarPopupOpen={isEditAvatarPopupOpen}
+                      closeImagePopup={closeImagePopup}
+                      closePopupConfirm={closePopupConfirm}
+                      onAddCard={onAddCard}
+                      onEditAvatarClick={onEditAvatarClick}
+                      onEditProfileClick={onEditProfileClick}
+                      deleteSelectedCard={deleteSelectedCard}
+                      handleUpdateUser={handleUpdateUser}
+                      handleUpdateAvatar={handleUpdateAvatar}
+                      setUser={setUser}
+                      setCards={setCards}
+                      setSelectedCard={setSelectedCard}
+                      setIsImagePopupOpen={setIsImagePopupOpen}
+                      setIsPopupConfirmOpen={setIsPopupConfirmOpen}
+                      setIsAddPlacePopupOpen={setIsAddPlacePopupOpen}
+                      setIsEditProfilePopupOpen={setIsEditProfilePopupOpen}
+                      setIsEditAvatarPopupOpen={setIsEditAvatarPopupOpen}
+                    />
+                  }
+                ></ProtectedRoute>
+              }
+            </Route>
+          </Routes>
+
+          <Footer />
+        </div>
+      </Router>
+    </CurrentUserContext.Provider>
   );
 }
