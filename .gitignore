@@ -1,0 +1,29 @@
+# Archivos de compilación y carpetas generadas
+node_modules/
+dist/
+build/
+
+# Archivos de configuración
+.env
+
+# Archivos temporales
+*.log
+*.tmp
+
+# Archivos de dependencias específicos de tu entorno de desarrollo
+# Por ejemplo, para proyectos de Python
+*.pyc
+__pycache__/
+
+# Archivos de sistema operativo y cachés
+.DS_Store
+Thumbs.db
+.cache/
+
+# Archivos de registros
+logs/
+*.log.*
+
+# Archivos de respaldo
+*.bak
+*.backup
