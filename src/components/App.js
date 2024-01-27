@@ -4,7 +4,6 @@ import {
   Routes,
   BrowserRouter as Router,
   Navigate,
-  /* useNavigate, */
 } from "react-router-dom";
 
 import "../App.css";
@@ -31,8 +30,6 @@ export function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
 
-  /*  const navigate = useNavigate(); */
-
   const fetchUserData = async () => {
     try {
       const userInfo = await api.getUserInfo();
@@ -43,20 +40,6 @@ export function App() {
       setLoggedIn(false);
     }
   };
-
-  /* const tokenCheck = () => {
-    const jwt = localStorage.getItem("jwt");
-
-    if (jwt) {
-      auth.getContent(jwt).then((res) => {
-        if (res) {
-          console.log(res);
-          setLoggedIn(true);
-          navigate("/profile");
-        }
-      });
-    }
-  }; */
 
   useEffect(() => {
     try {
@@ -112,8 +95,6 @@ export function App() {
     setCurrentUser(newUser);
     setIsEditAvatarPopupOpen(false);
   };
-
-  /* tokenCheck(); */
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
