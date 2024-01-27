@@ -15,6 +15,7 @@ import { Header } from "./Header";
 import { Main } from "./Main";
 import Login from "./Login";
 import Register from "./Register";
+import HeaderButton from "./HeaderButton";
 import * as auth from "../utils/auth";
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -118,23 +119,28 @@ export function App() {
     <CurrentUserContext.Provider value={currentUser}>
       <Router>
         <div className="page__content">
-          <Header />
+          <Header element={HeaderButton} />
 
           <Routes>
-            <Route path="/register" element={<Register />} />
+            <Route
+              path="/register"
+              element={<Register onLogin={fetchUserData} />}
+            />
             <Route path="/login" element={<Login onLogin={fetchUserData} />} />
-            <Route>
-              path="/" element=
-              {loggedIn ? (
-                <Navigate to="/profile" replace />
-              ) : (
-                <Navigate to="/login" replace />
-              )}
-            </Route>
+            <Route
+              path="/"
+              element={
+                loggedIn ? (
+                  <Navigate to="/profile" replace />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              }
+            />
 
-            <Route>
-              path="/profile" element=
-              {
+            <Route
+              path="/profile"
+              element={
                 <ProtectedRoute
                   loggedIn={loggedIn}
                   children={
@@ -167,7 +173,7 @@ export function App() {
                   }
                 ></ProtectedRoute>
               }
-            </Route>
+            />
           </Routes>
 
           <Footer />

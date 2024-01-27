@@ -26,9 +26,8 @@ export const register = async (contraseña, email) => {
     }
 
     const responseBody = await response.json();
-    console.log(responseBody);
 
-    return console.log(responseBody);
+    return responseBody;
   } catch (error) {
     console.error("Error:", error.message);
     return { error: true, message: error.message };

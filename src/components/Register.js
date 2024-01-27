@@ -1,13 +1,18 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/Register.css";
+import succesIcon from "../images/UI/Succes.svg";
+import failIcon from "../images/UI/Fail.svg";
+
 import * as auth from "../utils/auth";
 import InfoTooltip from "./InfoTooltip";
 
-const Register = () => {
+const Register = ({ onLogin }) => {
   const [email, setEmail] = useState("");
   const [contraseña, setContraseña] = useState("");
   const [message, setMessage] = useState("");
+  const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
+  const [stateStatusInfoTooltip, setStateStatusInfoTooltip] = useState(false);
   const navigate = useNavigate();
 
   const handleChangeRegister = (e) => {
@@ -19,19 +24,55 @@ const Register = () => {
   const handleSubmitRegister = (e) => {
     e.preventDefault();
 
+    const openInfoTooltip = () => {
+      setIsInfoTooltipOpen(true);
+    };
+
     auth.register(contraseña, email).then((res) => {
-      if (res) {
-        setMessage("");
-        navigate("/login");
-      } else {
-        setMessage("¡Algo salió mal!");
+      console.log("Respuesta:", res);
+      if (res?.data?._id && res?.data?.email) {
+        openInfoTooltip();
+        setStateStatusInfoTooltip(true);
+        onLogin();
+        setTimeout(() => {
+          navigate("/profile");
+        }, 3000);
+
+        console.log(res);
+      } else if (res && res.error === true) {
+        openInfoTooltip();
+        setStateStatusInfoTooltip(false);
       }
     });
   };
 
+  const statusTooltip = () => {
+    if (stateStatusInfoTooltip) {
+      return {
+        image: succesIcon,
+        message: "¡Correcto! Ya estás registrado.",
+        imageAlt: "Signo de confirmación",
+      };
+    } else {
+      return {
+        image: failIcon,
+        message: "Uy, algo salió mal. Por favor, inténtalo de nuevo.",
+        imageAlt: "Signo de fallo",
+      };
+    }
+  };
+
+  const closeInfoTooltip = () => {
+    setIsInfoTooltipOpen(false);
+  };
+
   return (
     <div className="register">
-      <InfoTooltip></InfoTooltip>
+      <InfoTooltip
+        isOpen={isInfoTooltipOpen}
+        closePopup={closeInfoTooltip}
+        statusTooltip={statusTooltip}
+      ></InfoTooltip>
       <p className="register__welcome">Regístrate.</p>
       <form onSubmit={handleSubmitRegister} className="register__form">
         <input

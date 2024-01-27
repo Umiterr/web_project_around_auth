@@ -1,6 +1,6 @@
 import logo from "../images/UI/Logo.svg";
 
-export function Header() {
+export function Header({ element: HeaderElement }) {
   return (
     <header className="header">
       <img
@@ -9,6 +9,7 @@ export function Header() {
         alt="Around The U.S."
         src={logo}
       />
+      <HeaderElement />
     </header>
   );
 }
