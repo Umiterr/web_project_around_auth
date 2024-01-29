@@ -1,7 +1,12 @@
 # Archivos de compilación y carpetas generadas
 node_modules/
+node_modules
 dist/
 build/
+
+
+# Directorio de cache npm opcional
+.npm
 
 # Archivos de configuración
 .env
@@ -19,10 +24,12 @@ __pycache__/
 .DS_Store
 Thumbs.db
 .cache/
+.idea
 
 # Archivos de registros
 logs/
 *.log.*
+npm-debug.log*
 
 # Archivos de respaldo
 *.bak
