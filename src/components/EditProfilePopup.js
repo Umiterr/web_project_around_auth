@@ -39,7 +39,7 @@ export function EditProfilePopup({ onUpdateUser, isOpen, closePopup }) {
       <PopupWithForm
         type="form-profile"
         onSubmit={handleSubmit}
-        title="Nuevo lugar"
+        title="Editar perfil"
         buttonTitle="Guardar"
       >
         <input

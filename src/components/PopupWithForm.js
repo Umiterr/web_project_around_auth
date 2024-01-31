@@ -12,12 +12,7 @@ export default function PopupWithForm({
   return (
     <div className={`${type}__window`}>
       <h3 className={`${type}__title`}>{title}</h3>
-      <form
-        className={`${type}__inputs`}
-        name={type}
-        onSubmit={onSubmit}
-        noValidate
-      >
+      <form className={`${type}__inputs`} name={type} onSubmit={onSubmit}>
         {children}
         <button
           className={`form__submit ${type}__save`}
